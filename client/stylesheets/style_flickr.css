@@ -1,0 +1,30 @@
+
+.flickr_form {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+
+    align-items: center;
+}
+
+#flickr_search {
+    width: 400px;
+    padding: 4px;
+    margin-bottom: 12px;
+
+    outline:none;
+    border: 1px solid grey;
+    border-radius: 6px;
+
+    font-size: 16px;
+}
+
+#flickr_submit {
+    width: 80px;
+    font-size: 14px;
+
+}
+
+.flickr_slide_show {
+    text-align: center;
+}

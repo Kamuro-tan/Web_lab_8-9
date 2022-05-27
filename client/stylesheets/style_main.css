@@ -1,0 +1,65 @@
+
+main {
+    background: white;
+    overflow: hidden;
+    padding: 10px 0;
+}
+
+main .container {
+    padding: 14px;
+}
+
+.tabs a span {
+    display: inline-block;
+    border-radius: 5px 5px 0 0;
+    width: 100px;
+    text-align: center;
+    background-color: #D2B48C;
+    padding: 5px;
+    color: #0000CD;
+}
+
+.tabs a span.active {
+    background-color: #F4A460;
+}
+
+.content {
+    padding: 14px;
+
+    background-color: #F4A460;
+}
+
+.content li {
+    padding: 4px;
+    margin-top: 6px;
+
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+.content input {
+    width: 400px;
+    padding: 4px;
+    margin-right: 10px;
+
+    outline:none;
+    border: 0px;
+    border-radius: 6px;
+
+    font-size: 16px;
+}
+
+.content .add_toDo {
+    padding: 0;
+}
+
+.content .add_toDo::before {
+    display: block;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    margin: 0;
+    content: "+";
+    font-size: 18px;
+    font-weight: bold;
+}
