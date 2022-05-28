@@ -2,3 +2,4 @@
 
 # папка с модулями, загружаемыми, командой npm install express
 node_modules/
+server_mysql.js

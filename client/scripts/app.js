@@ -84,7 +84,7 @@ var main = function (toDoObjects) {
     // обработчик нажатия кнопки добавления
     $('main .content').on('click', '.add_toDo', function () {
         if (new_description != "") {
-            var tags = new_tags.split(",");
+            var tags = new_tags.split(", ");
             if (tags.length != 0) {
                 var newToDo = { "description": new_description, "tags": tags };
 
