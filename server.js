@@ -13,11 +13,8 @@ mongoose.connect('mongodb://localhost/amazeriffic', function (err) {
     else console.log("---Mongo connect Error!---", err);
 });
 
-var ToDoSchema = mongoose.Schema({
-    description: String,
-    tags: [String]
-});
-var ToDo = mongoose.model("ToDo", ToDoSchema);
+var ToDo = require('./models/todo'),
+    User = require('./models/user');
 
 http.createServer(app).listen(3000);
 
