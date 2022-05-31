@@ -23,7 +23,7 @@ ToDosСontroller.index = function (req, res) {
             if (err !== null) {
                 res.json(500, err);
             } else if (result.length === 0) {
-                res.status(404).json({ "result_length": 0 });
+                res.status(404).json("That user doesn't exist!");
             } else {
                 respondWithToDos({ "owner": result[0]._id });
             }

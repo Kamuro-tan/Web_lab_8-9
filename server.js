@@ -43,8 +43,6 @@ app.get("/todos.json", function (req, res) {
 });
 
 app.post("/todos", function (req, res) {
-    console.log(req.body);
-
     var newToDo = new ToDo({
         "description": req.body.description,
         "tags": req.body.tags
@@ -64,4 +62,24 @@ app.post("/todos", function (req, res) {
             });
         }
     });
+});
+
+app.delete("/todos/:id", function (req, res) {
+    var id = req.params.id;
+
+    if (req.owner === null ) {
+        ToDo.deleteOne({ "_id": id }, function (err, todo) {
+            if (err !== null) {
+                res.status(500).json(err);
+            } else {
+                if (todo.acknowledged === true && todo.deletedCount === 1) {
+                    res.status(200).json(todo);
+                } else {
+                    res.status(404).json({ "status": 404 });
+                }
+            }
+        });
+    } else {
+        res.status(404).json("That todo have owner!");
+    }
 });
