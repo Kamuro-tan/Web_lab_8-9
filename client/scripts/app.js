@@ -17,16 +17,38 @@ var main = function (toDoObjects) {
             $element.addClass('active');
             $('main .content').empty();
 
+            function deleteOnСlick(todo) {
+                var $todoListItem = $("<li>").text(todo.description),
+                    $todoRemoveLink = $("<a>").attr("href", "todos/" + todo._id);
+                $todoRemoveLink.text("Удалить");
+                
+                $todoRemoveLink.on("click", function () {
+                    $.ajax({
+                        "url": "todos/" + todo._id,
+                        "type": "DELETE"
+                    }).done(function (response) {
+                        $(".tabs a:first-child span").trigger("click");
+                        console.log("AJAX DONE!");
+                    }).fail(function (err) {
+                        console.log("error on delete 'todo'!");
+                    });
+                    return false;
+                });
+                $todoListItem.append($todoRemoveLink);
+                $content.append($todoListItem);
+            };
+            
+
             if ($element.parent().is(':nth-child(1)')) {
                 $content = $('<ul>');
-                for (var i = (toDos.length - 1); i > -1; i--) {
-                    $content.append($('<li>').text(toDos[i]));
+                for (var i = (toDoObjects.length - 1); i > -1; i--) {
+                    deleteOnСlick(toDoObjects[i]);
                 }
 
             } else if ($element.parent().is(':nth-child(2)')) {
                 $content = $('<ul>')
-                toDos.forEach(function (todo) {
-                    $content.append($('<li>').text(todo));
+                toDoObjects.forEach(function (todo) {
+                    deleteOnСlick(todo);
                 });
 
             } else if ($element.parent().is(':nth-child(3)')) {
@@ -90,7 +112,6 @@ var main = function (toDoObjects) {
 
                 // этот обратный вызов выполняется при ответе сервера
                 $.post("todos", newToDo, function (response) {
-                    console.log(response);
                     toDoObjects.push(newToDo);
                     toDos = fromObjectsToArray(toDoObjects);
                 });

@@ -33,11 +33,6 @@ ToDosСontroller.index = function (req, res) {
     }
 };
 
-ToDosСontroller.show = function (req, res) {
-    console.log("вызвано действие: показать");
-    res.send(200);
-};
-
 ToDosСontroller.create = function (req, res) {
     var username = req.params.username || null;
 
@@ -55,7 +50,7 @@ ToDosСontroller.create = function (req, res) {
             } else {
                 newToDo.owner = result[0]._id;
             }
-            
+
             newToDo.save(function (err, result) {
                 if (err !== null) {
                     res.json(500, err);
@@ -73,8 +68,19 @@ ToDosСontroller.update = function (req, res) {
 };
 
 ToDosСontroller.destroy = function (req, res) {
-    console.log("destroy action called");
-    res.send(200);
+    var id = req.params.id;
+
+    ToDo.deleteOne({ "_id": id }, function (err, todo) {
+        if (err !== null) {
+            res.status(500).json(err);
+        } else {
+            if (todo.acknowledged === true && todo.deletedCount === 1) {
+                res.status(200).json(todo);
+            } else {
+                res.status(404).json({ "status": 404 });
+            }
+        }
+    });
 };
 
 module.exports = ToDosСontroller;

@@ -63,3 +63,14 @@ main .container {
     font-size: 18px;
     font-weight: bold;
 }
+
+.content a {
+    float: right;
+    margin-right: 20px;
+    color: black;
+    text-decoration: none;
+}
+
+.content a:hover {
+    color: blue;
+}
