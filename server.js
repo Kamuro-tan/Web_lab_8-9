@@ -4,7 +4,9 @@ var express = require('express'),
     mongoose = require('mongoose'),
     app = express();
 
-app.use(express.static(__dirname + "/client"));
+
+app.use('/', express.static(__dirname + '/client'));
+app.use('/user/:username', express.static(__dirname + '/client'));
 app.use(express.urlencoded({ extended: true }));
 
 // подключаемся к хранилищу данных Amazeriffic в Mongo - ДЛЯ ЭТОГО НУЖЕН MongoDB!
@@ -13,10 +15,24 @@ mongoose.connect('mongodb://localhost/amazeriffic', function (err) {
     else console.log("---Mongo connect Error!---", err);
 });
 
+
 var ToDo = require('./models/todo'),
-    User = require('./models/user');
+    User = require('./models/user'),
+    usersController = require('./controllers/usersController'),
+    todosController = require('./controllers/todosController');
 
 http.createServer(app).listen(3000);
+
+// app.get("/users.json", usersController.index);
+// app.post("/users", usersController.create);
+// app.get("/users/:username", usersController.show);
+// app.put("/users/:username", usersController.update);
+// app.delete("/users/:username", usersController.destroy);
+
+app.get("/user/:username/todos.json", todosController.index);
+app.post("/user/:username/todos", todosController.create);
+app.put("/user/:username/todos/:id", todosController.update);
+app.delete("/user/:username/todos/:id", todosController.destroy);
 
 // этот маршрут замещает наш файл todos.json в примере из части 5
 app.get("/todos.json", function (req, res) {
@@ -28,7 +44,7 @@ app.get("/todos.json", function (req, res) {
 
 app.post("/todos", function (req, res) {
     console.log(req.body);
-    
+
     var newToDo = new ToDo({
         "description": req.body.description,
         "tags": req.body.tags
