@@ -23,11 +23,11 @@ var ToDo = require('./models/todo'),
 
 http.createServer(app).listen(3000);
 
-// app.get("/users.json", usersController.index);
-// app.post("/users", usersController.create);
-// app.get("/users/:username", usersController.show);
-// app.put("/users/:username", usersController.update);
-// app.delete("/users/:username", usersController.destroy);
+app.get("/users.json", usersController.index);
+app.post("/users", usersController.create);
+app.get("/users/:username", usersController.show);
+app.put("/users/:username", usersController.update);
+app.delete("/users/:username", usersController.destroy);
 
 app.get("/user/:username/todos.json", todosController.index);
 app.post("/user/:username/todos", todosController.create);
@@ -67,19 +67,50 @@ app.post("/todos", function (req, res) {
 app.delete("/todos/:id", function (req, res) {
     var id = req.params.id;
 
-    if (req.owner === null ) {
-        ToDo.deleteOne({ "_id": id }, function (err, todo) {
-            if (err !== null) {
-                res.status(500).json(err);
+    ToDo.find({ "_id": id }, function (err, toDo) {
+        if (!err) {
+            if (toDo[0].owner === null || toDo[0].owner === undefined) {
+                ToDo.updateOne({ "_id": id }, newDescription, function (err, todo) {
+                    if (err !== null) {
+                        res.status(500).json(err);
+                    } else {
+                        if (todo.acknowledged === true && todo.deletedCount === 1) {
+                            res.status(200).json(todo);
+                        } else {
+                            res.status(404).json({ "status": 404 });
+                        }
+                    }
+                });
             } else {
-                if (todo.acknowledged === true && todo.deletedCount === 1) {
-                    res.status(200).json(todo);
-                } else {
-                    res.status(404).json({ "status": 404 });
-                }
+                res.status(404).json("That todo have owner!");
             }
-        });
-    } else {
-        res.status(404).json("That todo have owner!");
-    }
+        }
+        else console.log("---Get Error!---", err);
+    });
+});
+
+app.put("/todos/:id", function (req, res) {
+    var id = req.params.id;
+    var newDescription = { $set: { description: req.body.description } };
+
+    ToDo.find({ "_id": id }, function (err, toDo) {
+        if (!err) {
+            if (toDo[0].owner === null || toDo[0].owner === undefined) {
+                ToDo.updateOne({ "_id": id }, newDescription, function (err, todo) {
+                    if (err !== null) {
+                        res.status(500).json(err);
+                    } else {
+                        if (todo.acknowledged === true && todo.modifiedCount === 1) {
+                            res.status(200).json(todo);
+                        } else {
+                            res.status(404).json({ "status": 404 });
+                        }
+                    }
+                });
+            } else {
+                res.status(404).json("That todo have owner!");
+            }
+        }
+        else console.log("---Get Error!---", err);
+    });
 });

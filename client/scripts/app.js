@@ -1,6 +1,6 @@
 
 var main = function () {
-    // 'use strict';
+    'use strict';
 
     var new_description = "";
     var new_tags = "";
@@ -17,22 +17,39 @@ var main = function () {
 
             function showToDos(todo) {
                 var $todoListItem = $("<li>").text(todo.description),
-                    $todoRemoveLink = $("<a>").attr("href", "todos/" + todo._id);
+                    $todoRemoveLink = $("<a>").attr("href", "todos/" + todo._id),
+                    $todoEditLink = $("<a>").attr("href", "todos/" + todo._id);
                 $todoRemoveLink.text("Удалить");
+                $todoEditLink.text("Редакитровать");
 
                 $todoRemoveLink.on("click", function () {
                     $.ajax({
                         "url": "todos/" + todo._id,
                         "type": "DELETE"
                     }).done(function (response) {
-                        $(".tabs a:first-child span").trigger("click");
+                        $($element).trigger("click");
                     }).fail(function (err) {
-                        console.log("error on delete 'todo'!");
+                        console.log("Error on delete 'todo'!");
+                    });
+                    return false;
+                });
+
+                $todoEditLink.on("click", function () {
+                    var newDescription = prompt("Введите новое наименование для задачи", todo.description);
+                    $.ajax({
+                        "url": "todos/" + todo._id,
+                        "type": "PUT",
+                        "data": { "description": newDescription }
+                    }).done(function (response) {
+                        $($element).trigger("click");
+                    }).fail(function (err) {
+                        console.log("Error on edit 'todo.description'!");
                     });
                     return false;
                 });
 
                 $todoListItem.append($todoRemoveLink);
+                $todoListItem.append($todoEditLink);
                 $content.append($todoListItem);
             };
 

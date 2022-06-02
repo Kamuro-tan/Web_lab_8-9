@@ -62,11 +62,6 @@ ToDosСontroller.create = function (req, res) {
     });
 };
 
-ToDosСontroller.update = function (req, res) {
-    console.log("вызвано действие: обновить");
-    res.send(200);
-};
-
 ToDosСontroller.destroy = function (req, res) {
     var id = req.params.id;
 
@@ -75,6 +70,23 @@ ToDosСontroller.destroy = function (req, res) {
             res.status(500).json(err);
         } else {
             if (todo.acknowledged === true && todo.deletedCount === 1) {
+                res.status(200).json(todo);
+            } else {
+                res.status(404).json({ "status": 404 });
+            }
+        }
+    });
+};
+
+ToDosСontroller.update = function (req, res) {
+    var id = req.params.id;
+    var newDescription = { $set: { description: req.body.description } };
+
+    ToDo.updateOne({ "_id": id }, newDescription, function (err, todo) {
+        if (err !== null) {
+            res.status(500).json(err);
+        } else {
+            if (todo.acknowledged === true && todo.modifiedCount === 1) {
                 res.status(200).json(todo);
             } else {
                 res.status(404).json({ "status": 404 });

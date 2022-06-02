@@ -26,8 +26,10 @@ User.find({}, function (err, result) {
 var UsersСontroller = {};
 
 UsersСontroller.index = function (req, res) {
-    console.log("вызвано действие: индекс");
-    res.send(200);
+    User.find({}, function (err, Users) {
+        if (!err) res.json(Users);
+        else console.log("---Get Error!---", err);
+    });
 };
 
 // Отобразить пользователя
@@ -38,8 +40,18 @@ UsersСontroller.show = function (req, res) {
 
 // Создать нового пользователя
 UsersСontroller.create = function (req, res) {
-    console.log("вызвано действие: создать");
-    res.send(200);
+    var newUser = new User({
+        "username": req.body.username,
+        "id": req.body.id
+    });
+
+    newUser.save(function (err, result) {
+        if (err !== null) {
+            res.json(500, err);
+        } else {
+            res.status(200).json(result);
+        }
+    });
 };
 
 // Обновить существующего пользователя
