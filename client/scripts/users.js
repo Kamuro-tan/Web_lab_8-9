@@ -9,19 +9,35 @@ var main = function () {
         $.getJSON("/users.json", function (userObjects) {
             var $table = $('<table>'),
                 $tr = $('<tr>'),
-                $th_username = $('<th>').text("Username:").attr({ width: "60%" }),
-                $th_id = $('<th>').text("ID:");
+                $th_username = $('<th>').addClass('info').text("Username:").attr({ width: "50%" }),
+                $th_id = $('<th>').addClass('info').text("ID:").attr({ width: "40%" });
             $tr.append($th_username);
             $tr.append($th_id);
+            $tr.append($('<th>'));
             $table.append($tr);
 
             userObjects.forEach(function (user) {
                 $tr = $('<tr>');
                 var $username = $('<td>').text(user.username),
-                    $userid = $('<td>').text(user.id);
+                    $userid = $('<td>').text(user.id),
+                    $userRemoveLink = $('<a>').attr("href", "users/" + user.username);
+                $userRemoveLink.text("Удалить");
+
+                $userRemoveLink.on("click", function () {
+                    $.ajax({
+                        "url": "users/" + user.username,
+                        "type": "DELETE"
+                    }).done(function (response) {
+                        showAllUsers();
+                    }).fail(function (err) {
+                        console.log("Error on delete 'user'!");
+                    });
+                    return false;
+                });
 
                 $tr.append($username);
                 $tr.append($userid);
+                $tr.append($userRemoveLink);
                 $table.append($tr);
             });
 

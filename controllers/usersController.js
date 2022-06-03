@@ -1,5 +1,6 @@
 
 var User = require("../models/user.js"),
+    ToDo = require("../models/todo"),
     mongoose = require("mongoose");
 
 // проверка, не существует ли уже пользователь
@@ -9,8 +10,8 @@ User.find({}, function (err, result) {
         console.log(err);
     } else if (result.length === 0) {
         console.log("Создание тестового пользователя...");
-        var exampleUser = new User({ 
-            "username": "usertest" 
+        var exampleUser = new User({
+            "username": "usertest"
         });
         exampleUser.save(function (err, result) {
             if (err) {
@@ -62,8 +63,42 @@ UsersСontroller.update = function (req, res) {
 
 // Удалить существующего пользователя
 UsersСontroller.destroy = function (req, res) {
-    console.log("destroy action called");
-    res.send(200);
+    var username = req.params.username;
+
+    User.deleteOne({ "username": username }, function (err, user) {
+        if (err !== null) {
+            res.status(500).json(err);
+        } else {
+            if (user.acknowledged === true && user.deletedCount === 1) {
+                res.status(200).json(user);
+
+            } else {
+                res.status(404).json({ "status": 404 });
+            }
+        }
+    });
+
+    User.find({ "username": username }, function (err, result) {
+        if (err) {
+            res.send(500);
+        } else {
+            var userid = result[0]._id;
+
+            ToDo.deleteMany({ "owner": userid }, function (err, todo) {
+                if (err !== null) {
+                    res.status(500).json(err);
+                } else {
+                    if (todo.acknowledged === true) {
+                        // res.status(200).json(todo);
+
+                    } else {
+                        res.status(404).json({ "status": 404 });
+                    }
+                }
+            });
+        }
+    });
+
 };
 
 module.exports = UsersСontroller;
